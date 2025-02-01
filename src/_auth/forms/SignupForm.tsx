@@ -21,7 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { signUpValidation } from "@/lib/validation";
-import { createUserAccount } from "@/lib/appwrite/api";
+
+import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations";
 
 
 
@@ -31,7 +32,11 @@ import { createUserAccount } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
   const { toast } = useToast()
-  const isLoading =false;
+  
+
+  const { mutateAsync: createUserAccount, isLoading: isCreatingUser} = useCreateUserAccount();
+
+
   const form = useForm<z.infer<typeof signUpValidation>>({
     resolver: zodResolver(signUpValidation),
     defaultValues: {
@@ -51,6 +56,7 @@ const SignupForm = () => {
        
       }) ;
     }
+   // const session  = await signInAccount()
   }
   return (
     <Form {...form}>
@@ -119,7 +125,7 @@ const SignupForm = () => {
         />
         <Button type="submit" className="shad-button_primary">
           {
-            isLoading ? (
+            isCreatingUser ? (
               <div className="flex-center gap-2">
                <Load /> Loading...
               </div>
